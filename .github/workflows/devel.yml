@@ -25,6 +25,52 @@ on:
     - cron: '30 01 * * *' # Every day at 01:30 UTC
 
 jobs:
+  build-wasix:
+    runs-on: ubuntu-22.04
+    name: "Build WASIX"
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+    - name: Install Tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git llvm clang make lld curl
+    - name: "Install cargo-wasix"
+      run: |
+        cargo install cargo-wasix
+    - name: "Download Toolchain"
+      run: |
+        cargo wasix download-toolchain v2024-06-26.1
+    - name: "Build"
+      run: |
+        cargo wasix build --no-default-features --features compression-gzip,http2 --bin static-web-server --release
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: static-web-server
+        path: target/wasm32-wasmer-wasi/release/static-web-server.wasm
+
+  publish-wasix:
+    runs-on: ubuntu-22.04
+    if: ${{ github.ref == 'refs/heads/master' }}
+    needs: [build-wasix]
+    name: "Publish"
+    steps:
+    - uses: actions/checkout@v4
+    - name: Download Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: static-web-server
+    - name: Setup Wasmer
+      uses: wasmerio/setup-wasmer@v3.1
+    - name: List contents
+      run: |
+        ls
+    - name: "Push"
+      run: |
+        wasmer package push --registry="wasmer.io" --non-interactive --token=${{ secrets.WASMER_CIUSER_PROD_TOKEN }} .
+
   test:
     name: test
     runs-on: ${{ matrix.os }}
