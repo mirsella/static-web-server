@@ -209,7 +209,16 @@ fn read_dir_entries(mut opt: DirEntryOpts<'_>) -> Result<Response<Body>> {
         let name = dir_entry.file_name();
 
         // Check and ignore the current hidden file/directory (dotfile) if feature enabled
-        if opt.ignore_hidden_files && name.as_encoded_bytes().first().is_some_and(|c| *c == b'.') {
+        // FIXME: This should be switched back to using as_encoded_bytes once we upgrade the toolchain
+        // to use the latest Rust version
+        if opt.ignore_hidden_files
+            && name
+                .to_str()
+                .ok_or_else(|| anyhow::anyhow!("failed to convert name to str"))?
+                .as_bytes()
+                .first()
+                .is_some_and(|c| *c == b'.')
+        {
             continue;
         }
 
@@ -258,7 +267,15 @@ fn read_dir_entries(mut opt: DirEntryOpts<'_>) -> Result<Response<Body>> {
             continue;
         };
 
-        let name_encoded = percent_encode(name.as_encoded_bytes(), PERCENT_ENCODE_SET).to_string();
+        // FIXME: This should be switched back to using as_encoded_bytes once we upgrade the toolchain
+        // to use the latest Rust version
+        let name_encoded = percent_encode(
+            name.to_str()
+                .ok_or_else(|| anyhow::anyhow!("failed to convert name to str"))?
+                .as_bytes(),
+            PERCENT_ENCODE_SET,
+        )
+        .to_string();
 
         // NOTE: Use relative paths by default independently of
         // the "redirect trailing slash" feature.
