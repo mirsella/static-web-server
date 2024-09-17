@@ -27,7 +27,7 @@ impl PathExt for Path {
     }
 }
 
-#[cfg(unix)]
+#[cfg(any(unix, target_vendor = "wasmer"))]
 fn path_from_bytes(bytes: &[u8]) -> PathBuf {
     use std::ffi::OsStr;
     use std::os::unix::ffi::OsStrExt;

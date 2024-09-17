@@ -671,9 +671,13 @@ impl Settings {
 
 fn read_file_settings(config_file: &Path) -> Result<Option<(FileSettings, PathBuf)>> {
     if config_file.is_file() {
+        #[cfg(not(target_vendor = "wasmer"))]
         let file_path_resolved = config_file
             .canonicalize()
             .with_context(|| "unable to resolve toml config file path")?;
+
+        #[cfg(target_vendor = "wasmer")]
+        let file_path_resolved = config_file.to_owned();
 
         let settings = FileSettings::read(&file_path_resolved).with_context(|| {
             "unable to read toml config file because has invalid format or unsupported options"

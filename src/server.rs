@@ -10,7 +10,10 @@ use hyper::server::Server as HyperServer;
 use listenfd::ListenFd;
 use std::net::{IpAddr, SocketAddr, TcpListener};
 use std::sync::Arc;
-use tokio::sync::{watch::Receiver, Mutex};
+use tokio::sync::watch::Receiver;
+
+#[cfg(not(target_vendor = "wasmer"))]
+use tokio::sync::Mutex;
 
 use crate::handler::{RequestHandler, RequestHandlerOpts};
 
@@ -556,7 +559,7 @@ impl Server {
 
                 #[cfg(windows)]
                 tokio::try_join!(ctrlc_task, server_task, redirect_server_task)?;
-                #[cfg(unix)]
+                #[cfg(any(unix, target_vendor = "wasmer"))]
                 tokio::try_join!(server_task, redirect_server_task)?;
 
                 #[cfg(unix)]
