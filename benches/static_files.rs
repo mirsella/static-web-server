@@ -1,7 +1,5 @@
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
 
-use static_web_server::static_files;
-
 #[derive(Debug)]
 struct Inputs<'a> {
     base_path: &'a std::path::Path,
@@ -21,7 +19,7 @@ fn sanitize_path_benchmark(c: &mut Criterion) {
         uri_path,
     };
     c.bench_with_input(BenchmarkId::new("path_inputs", &inputs), &inputs, |b, s| {
-        b.iter(|| static_files::sanitize_path(s.base_path, s.uri_path))
+        b.iter(|| static_web_server::fs::path::sanitize_path(s.base_path, s.uri_path))
     });
 }
 

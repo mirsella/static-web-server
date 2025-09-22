@@ -1,19 +1,21 @@
 [package]
-name = "wasmer/static-web-server"
-version = "1.0.4"
-description = "Serves static files in response to HTTP GET and HEAD requests."
-license = "MIT"
+name = "mirsella/static-web-server"
+version = "2.32.2"
+description = "A cross-platform, high-performance and asynchronous web server for static files-serving."
+license = "MIT OR Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/wasmerio/static-web-server"
-homepage = "https://wasmer.io/wasmer/static-web-server"
-wasmer-extra-flags = "--enable-threads --enable-bulk-memory"
+repository = "https://github.com/static-web-server/static-web-server"
+homepage = "https://static-web-server.net"
 
 [[module]]
-name = "webserver"
-source = "static-web-server.wasm"
+name = "static-web-server"
+source = "target/wasm32-wasmer-wasi/release/static-web-server.wasm"
 abi = "wasi"
 
+[module.interfaces]
+wasi = "0.1.0-unstable"
+
 [[command]]
-name = "webserver"
-module = "webserver"
-runner = "wasi@unstable_"
+name = "static-web-server"
+module = "static-web-server"
+runner = "wasi"

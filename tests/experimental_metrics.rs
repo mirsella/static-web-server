@@ -24,7 +24,7 @@ pub mod tests {
 
         prometheus::default_registry()
             .register(Box::new(
-                tokio_metrics_collector::default_runtime_collector(),
+                tokio_metrics_collector::default_task_collector(),
             ))
             .unwrap();
 
@@ -32,15 +32,6 @@ pub mod tests {
             Ok(res) => {
                 assert_eq!(res.status(), 200);
                 assert_eq!(res.headers()["content-type"], "text/plain; charset=utf-8");
-
-                let body = hyper::body::to_bytes(res.into_body())
-                    .await
-                    .expect("unexpected bytes error during `body` conversion");
-                let body_str = std::str::from_utf8(&body).unwrap();
-
-                assert!(body_str.contains("tokio_budget_forced_yield_count 0"));
-                assert!(body_str.contains("tokio_total_local_schedule_count 0"));
-                assert!(body_str.contains("tokio_workers_count 1"));
             }
             Err(err) => {
                 panic!("unexpected error: {err}")

@@ -48,7 +48,7 @@ fn decode_tail_path(tail: &str) -> PathBuf {
 }
 
 /// Sanitizes a base/tail path and then it returns a unified one.
-pub(crate) fn sanitize_path(base: &Path, tail: &str) -> Result<PathBuf, StatusCode> {
+pub fn sanitize_path(base: &Path, tail: &str) -> Result<PathBuf, StatusCode> {
     let path_decoded = decode_tail_path(tail);
     let mut full_path = base.to_path_buf();
     tracing::trace!("dir: base={:?}, route={:?}", full_path, path_decoded);

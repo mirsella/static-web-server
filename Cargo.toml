@@ -9,19 +9,15 @@ description = "A cross-platform, high-performance and asynchronous web server fo
 repository = "https://github.com/static-web-server/static-web-server"
 readme = "README.md"
 homepage = "https://static-web-server.net"
-keywords = [
-    "static-web-server",
-    "file-server",
-    "http-server"
-]
+keywords = ["static-web-server", "file-server", "http-server"]
 categories = ["network-programming", "web-programming::http-server"]
 include = [
-    "src/**/*.rs",
-    "build.rs",
-    "Cargo.toml",
-    "README.md",
-    "LICENSE-MIT",
-    "LICENSE-APACHE"
+  "src/**/*.rs",
+  "build.rs",
+  "Cargo.toml",
+  "README.md",
+  "LICENSE-MIT",
+  "LICENSE-APACHE",
 ]
 autotests = true
 autoexamples = true
@@ -38,13 +34,24 @@ doc = false
 
 [features]
 # All features enabled by default
-default = ["compression", "http2", "directory-listing", "basic-auth", "fallback-page"]
+default = [
+  "compression",
+  "http2",
+  "directory-listing",
+  "basic-auth",
+  "fallback-page",
+]
 # Include all features (used when building SWS binaries)
 all = ["default", "experimental"]
 # HTTP2
 http2 = ["tokio-rustls", "rustls-pemfile"]
 # Compression
-compression = ["compression-brotli", "compression-deflate", "compression-gzip", "compression-zstd"]
+compression = [
+  "compression-brotli",
+  "compression-deflate",
+  "compression-gzip",
+  "compression-zstd",
+]
 compression-brotli = ["async-compression/brotli"]
 compression-deflate = ["async-compression/deflate"]
 compression-gzip = ["async-compression/deflate"]
@@ -62,10 +69,19 @@ experimental = ["tokio-metrics-collector", "prometheus"]
 [dependencies]
 aho-corasick = "1.1"
 anyhow = "1.0"
-async-compression = { version = "0.4", default-features = false, optional = true, features = ["brotli", "deflate", "gzip", "zstd", "tokio"] }
+async-compression = { version = "0.4", default-features = false, optional = true, features = [
+  "brotli",
+  "deflate",
+  "gzip",
+  "zstd",
+  "tokio",
+] }
 bcrypt = { version = "0.15", optional = true }
 bytes = "1.6"
-chrono = { version = "0.4", default-features = false, features = ["std", "clock"], optional = true }
+chrono = { version = "0.4", default-features = false, features = [
+  "std",
+  "clock",
+], optional = true }
 clap = { version = "=4.4", features = ["derive", "env"] }
 compact_str = "0.8"
 form_urlencoded = "1.2"
@@ -74,7 +90,13 @@ globset = { version = "0.4", features = ["serde1"] }
 headers = "=0.3.0"
 http = "0.2"
 http-serde = "1.1"
-hyper = { version = "0.14", features = ["stream", "http1", "http2", "tcp", "server"] }
+hyper = { version = "0.14", features = [
+  "stream",
+  "http1",
+  "http2",
+  "tcp",
+  "server",
+] }
 lazy_static = "1.5"
 listenfd = "1.0"
 maud = { version = "0.26", optional = true }
@@ -89,12 +111,29 @@ serde_ignored = "0.1"
 serde_json = "1.0"
 serde_repr = "0.1"
 shadow-rs = { version = "0.29", default-features = false }
-tokio = { version = "=1.35.1", default-features = false, features = ["rt-multi-thread", "macros", "fs", "io-util", "signal"] }
-tokio-rustls = { version = "0.26", optional = true, default-features = false, features = ["logging", "tls12", "ring"] }
+tokio = { version = "=1.35.1", default-features = false, features = [
+  "rt-multi-thread",
+  "macros",
+  "fs",
+  "io-util",
+  "signal",
+] }
+tokio-rustls = { version = "0.26", optional = true, default-features = false, features = [
+  "ring",
+  "tls12",
+  "logging",
+] }
 tokio-util = { version = "0.7", default-features = false, features = ["io"] }
 toml = "0.8"
 tracing = { version = "0.1", default-features = false, features = ["std"] }
-tracing-subscriber = { version = "0.3", default-features = false, features = ["smallvec", "registry", "parking_lot", "fmt", "ansi", "tracing-log"] }
+tracing-subscriber = { version = "0.3", default-features = false, features = [
+  "smallvec",
+  "registry",
+  "parking_lot",
+  "fmt",
+  "ansi",
+  "tracing-log",
+] }
 getrandom = "=0.2.10"
 triomphe = "=0.1.3"
 rustix = "=0.38.30"
@@ -105,7 +144,9 @@ version = "0.6"
 
 [target.'cfg(unix)'.dependencies]
 signal-hook = { version = "0.3", features = ["extended-siginfo"] }
-signal-hook-tokio = { version = "0.3", features = ["futures-v0_3"], default-features = false }
+signal-hook-tokio = { version = "0.3", features = [
+  "futures-v0_3",
+], default-features = false }
 tokio-metrics-collector = { version = "0.2", optional = true }
 prometheus = { version = "0.13", optional = true }
 
@@ -115,6 +156,7 @@ windows-service = "0.7"
 [dev-dependencies]
 bytes = "1.6"
 serde_json = "1.0"
+criterion = "0.5"
 
 [build-dependencies]
 shadow-rs = { version = "0.29", default-features = false }
@@ -136,12 +178,12 @@ rustdoc-args = ["--cfg", "docsrs"]
 # Cross: workaround for https://github.com/cross-rs/cross/issues/1345
 [package.metadata.cross.target.x86_64-unknown-netbsd]
 pre-build = [
-    "mkdir -p /tmp/netbsd",
-    "curl https://cdn.netbsd.org/pub/NetBSD/NetBSD-9.2/amd64/binary/sets/base.tar.xz -O",
-    "tar -C /tmp/netbsd -xJf base.tar.xz",
-    "cp /tmp/netbsd/usr/lib/libexecinfo.so /usr/local/x86_64-unknown-netbsd/lib",
-    "rm base.tar.xz",
-    "rm -rf /tmp/netbsd",
+  "mkdir -p /tmp/netbsd",
+  "curl https://cdn.netbsd.org/pub/NetBSD/NetBSD-9.2/amd64/binary/sets/base.tar.xz -O",
+  "tar -C /tmp/netbsd -xJf base.tar.xz",
+  "cp /tmp/netbsd/usr/lib/libexecinfo.so /usr/local/x86_64-unknown-netbsd/lib",
+  "rm base.tar.xz",
+  "rm -rf /tmp/netbsd",
 ]
 
 # Cross: Linux ARM64 Musl only
@@ -150,6 +192,11 @@ pre-build = [
 # - https://github.com/static-web-server/static-web-server/issues/440
 # - https://github.com/jemalloc/jemalloc/issues/467
 passthrough = ["JEMALLOC_SYS_WITH_LG_PAGE=16"]
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = [
+  'cfg(target_vendor, values("wasmer"))',
+] }
 
 [patch.crates-io]
 libc = { git = "https://github.com/wasix-org/libc.git", branch = "v0.2.152" }

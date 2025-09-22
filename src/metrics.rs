@@ -19,9 +19,7 @@ pub fn init(enabled: bool, handler_opts: &mut RequestHandlerOpts) {
 
     if enabled {
         default_registry()
-            .register(Box::new(
-                tokio_metrics_collector::default_runtime_collector(),
-            ))
+            .register(Box::new(tokio_metrics_collector::default_task_collector()))
             .unwrap();
     }
 }

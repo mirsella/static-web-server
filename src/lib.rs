@@ -160,7 +160,7 @@ pub mod error_page;
 #[cfg(feature = "fallback-page")]
 #[cfg_attr(docsrs, doc(cfg(feature = "fallback-page")))]
 pub mod fallback_page;
-pub(crate) mod fs;
+pub mod fs;
 pub mod handler;
 #[cfg(any(
     feature = "compression",
@@ -171,7 +171,7 @@ pub mod handler;
 ))]
 pub(crate) mod headers_ext;
 pub(crate) mod health;
-pub(crate) mod http_ext;
+pub mod http_ext;
 #[cfg(feature = "http2")]
 #[cfg_attr(docsrs, doc(cfg(feature = "http2")))]
 pub mod https_redirect;
